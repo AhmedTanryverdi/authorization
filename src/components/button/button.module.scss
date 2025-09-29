@@ -1,0 +1,31 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+$font-size: 16px;
+$line-height: 24px;
+
+.button {
+  @include form-element;
+
+  background-color: $color-primary;
+  color: $color-text-primary;
+  border-color: $color-primary;
+
+  font-size: $font-size;
+  line-height: $line-height;
+  text-align: center;
+
+  cursor: pointer;
+
+  &:disabled {
+    background-color: $color-container-disabled;
+    color: $color-text-disabled;
+    border-color: $color-border-disabled;
+    
+    cursor: not-allowed;
+  }
+
+  &:not(:disabled):active {
+    background-color: darken($color-primary, 5%);
+  }
+}

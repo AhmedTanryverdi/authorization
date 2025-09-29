@@ -1,0 +1,19 @@
+@import '../../styles/colors';
+@import '../../styles/mixins';
+
+$font-size: 16px;
+$line-height: 24px;
+
+.timeout {
+  @include form-element;
+
+  border: none;
+  font-size: $font-size;
+  line-height: $line-height;
+  text-align: center;
+  color: #000000A6;
+
+  cursor: default;
+
+  margin-top: 16px;
+}
