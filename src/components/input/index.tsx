@@ -1,4 +1,4 @@
-import { useRef, ChangeEvent, JSX, useState } from "react";
+import { useRef, ChangeEvent, JSX, useState, useEffect } from "react";
 import styles from "./input.module.scss";
 import { IProps } from "../../utils/types";
 import { onChangeDigit, onKeyDownDigit } from "../../utils/helpers";
@@ -43,7 +43,7 @@ const Password = createInput({
 	type: "password",
 });
 
-const DigitCode = () => {
+const DigitCode = ({ handleConfirm }: { handleConfirm: () => void }) => {
 	const [code, setCode] = useState([] as string[]);
 	const codeRefs = [
 		useRef<HTMLInputElement>(null),
@@ -53,6 +53,12 @@ const DigitCode = () => {
 		useRef<HTMLInputElement>(null),
 		useRef<HTMLInputElement>(null),
 	];
+
+	useEffect(() => {
+		if (code.length === 6) {
+			handleConfirm();
+		}
+	}, [code.length]);
 
 	return (
 		<div className={styles.digits_block}>
@@ -69,7 +75,6 @@ const DigitCode = () => {
 		</div>
 	);
 };
-
 
 export const Input = {
 	Text,

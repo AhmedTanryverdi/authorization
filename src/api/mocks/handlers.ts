@@ -4,6 +4,15 @@ import { components } from "../../utils/generated";
 
 export type ApiSchemas = components["schemas"];
 
+// Шестизначный код
+/*
+let expectedConfirmationCode = Math.floor(
+	100000 + Math.random() * 900000
+).toString();
+*/
+
+let expectedConfirmationCode = "123456";
+
 const mockUsers = [
 	{
 		email: "ahmed@yandex.ru",
@@ -31,6 +40,27 @@ export const authHandlers = [
 			{
 				message: "Авторизация прошла успешно!",
 				codeSentTo: user.email,
+			},
+			{ status: 200 }
+		);
+	}),
+
+	http.post("/auth/confirm", async ({ request }) => {
+		const body = await request.json();
+		const providedCode = body.confirmationCode;
+
+		if (providedCode !== expectedConfirmationCode) {
+			return HttpResponse.json(
+				{
+					error: "Неверный код подтверждения",
+				},
+				{ status: 400 }
+			);
+		}
+
+		return HttpResponse.json(
+			{
+				message: "Аккаунт подтвержден успешно!",
 			},
 			{ status: 200 }
 		);
