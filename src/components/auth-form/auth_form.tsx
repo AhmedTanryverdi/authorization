@@ -1,26 +1,10 @@
 import logo from "../../assets/images/logo.png";
-import { ChangeEvent, JSX, useContext, useState } from "react";
+import { ChangeEvent, FormEvent, JSX, useContext, useState } from "react";
 import { ErrorStyleType } from "../../utils/types";
 import { Input } from "../input";
 import { onBlur, onChange as change } from "../../utils/helpers";
 import { Button } from "../button";
 import { ValidateState } from "../../context/validate";
-import { rqClient } from "../../api/instance";
-import { useMutation } from "@tanstack/react-query";
-
-interface AuthRequest {
-	email: string;
-	password: string;
-}
-
-const mutationOptions = {
-	onSuccess(data: any) {
-		console.log("Successful login:", data); // Обработка успешного входа
-	},
-	onError(error: any) {
-		console.error("Login error:", error); // Обработка ошибки
-	},
-};
 
 export const AuthForm = (): JSX.Element => {
 	const [emailValue, setEmailValue] = useState<string>("");
@@ -35,8 +19,34 @@ export const AuthForm = (): JSX.Element => {
 
 	const { setValidate } = useContext(ValidateState);
 
+	const handleSubmit = async (event: FormEvent) => {
+		event.preventDefault();
+
+		try {
+			const res = await fetch("/auth/signin", {
+				method: "POST",
+				body: JSON.stringify({
+					email: emailValue,
+					password: passwordValue,
+				}),
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			if (res.ok) {
+				console.log("Успешная авторизация!");
+				setValidate(true);
+			} else {
+				console.log("[error]", await res.text());
+			}
+		} catch (err) {
+			console.error(err);
+		}
+	};
+
 	return (
-		<form>
+		<form onSubmit={handleSubmit}>
 			<img src={logo} alt="logo" />
 			<h1 className="App-title">
 				Sign in to your account to
@@ -94,7 +104,7 @@ export const AuthForm = (): JSX.Element => {
 					!Boolean(emailValue) ||
 					!Boolean(passwordValue)
 				}
-				onClick={() => setValidate(true)}
+				onClick={handleSubmit}
 			/>
 		</form>
 	);
