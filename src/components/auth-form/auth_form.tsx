@@ -1,10 +1,11 @@
 import logo from "../../assets/images/logo.png";
-import { ChangeEvent, FormEvent, JSX, useContext, useState } from "react";
+import { ChangeEvent, JSX, useContext, useState } from "react";
 import { ErrorStyleType } from "../../utils/types";
 import { Input } from "../input";
 import { onBlur, onChange as change } from "../../utils/helpers";
 import { Button } from "../button";
 import { ValidateState } from "../../context/validate";
+import { rqClient } from "src/api/instance";
 
 export const AuthForm = (): JSX.Element => {
 	const [emailValue, setEmailValue] = useState<string>("");
@@ -19,34 +20,25 @@ export const AuthForm = (): JSX.Element => {
 
 	const { setValidate } = useContext(ValidateState);
 
-	const handleSubmit = async (event: FormEvent) => {
-		event.preventDefault();
+	const createMutation = rqClient.useMutation("post", "/auth/signin");
 
+	const handleSignIn = async () => {
 		try {
-			const res = await fetch("/auth/signin", {
-				method: "POST",
-				body: JSON.stringify({
+			await createMutation.mutateAsync({
+				body: {
 					email: emailValue,
 					password: passwordValue,
-				}),
-				headers: {
-					"Content-Type": "application/json",
 				},
 			});
 
-			if (res.ok) {
-				console.log("Успешная авторизация!");
-				setValidate(true);
-			} else {
-				console.log("[error]", await res.text());
-			}
-		} catch (err) {
-			console.error(err);
+			setValidate(true);
+		} catch (error: any) {
+			console.error("Ошибка:", error);
 		}
 	};
 
 	return (
-		<form onSubmit={handleSubmit}>
+		<form>
 			<img src={logo} alt="logo" />
 			<h1 className="App-title">
 				Sign in to your account to
@@ -104,7 +96,7 @@ export const AuthForm = (): JSX.Element => {
 					!Boolean(emailValue) ||
 					!Boolean(passwordValue)
 				}
-				onClick={handleSubmit}
+				onClick={handleSignIn}
 			/>
 		</form>
 	);
