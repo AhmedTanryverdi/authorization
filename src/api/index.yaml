@@ -47,7 +47,7 @@ paths:
                                         format: numeric
                                         pattern: '^\\d{6}$'
                                         example: 395781
-                "400":
+                "401":
                     description: Ошибка авторизации
                     content:
                         application/json:

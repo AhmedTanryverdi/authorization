@@ -1,8 +1,18 @@
 import { ChangeEvent } from "react";
 
 export type ErrorStyleType = {
-	error: boolean;
-	boxShadow?: string;
+	email: {
+		style: {
+			boxShadow?: string;
+		};
+		error: boolean;
+	};
+	password: {
+		style: {
+			boxShadow?: string;
+		};
+		error: boolean;
+	};
 };
 
 export interface IProps {

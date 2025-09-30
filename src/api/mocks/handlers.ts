@@ -1,14 +1,18 @@
 import { HttpResponse } from "msw";
 import { http } from "../mocks/http";
 import { components } from "../../utils/generated";
-import { UserType } from "src/utils/types";
 
 export type ApiSchemas = components["schemas"];
 
 // Шестизначный код
 let expectedConfirmationCode: string;
 
-const mockUsers: UserType[] = [];
+const mockUsers = [
+	{
+		email: "ahmed@yandex.ru",
+		password: "123456",
+	},
+];
 
 export const authHandlers = [
 	http.post("/auth/signin", async ({ request }: any) => {
@@ -18,10 +22,12 @@ export const authHandlers = [
 		);
 
 		if (!user) {
-			mockUsers.push({
-				email: body.email,
-				password: body.password,
-			});
+			return HttpResponse.json(
+				{
+					error: "Пользователь не найден!",
+				},
+				{ status: 401 }
+			);
 		}
 
 		const confirmCode = Math.floor(

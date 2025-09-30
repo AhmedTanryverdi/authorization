@@ -77,6 +77,7 @@ const DigitCode = ({
 			handleConfirm(code.join(""));
 		}
 	}, [code.length, code]);
+
 	useEffect(() => {
 		setCode([]);
 		setIsCodeConfirm(CodeConfirmationState.NotEntered);

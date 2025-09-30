@@ -17,7 +17,6 @@ export const AuthCodeForm: React.FC = (): JSX.Element => {
 			});
 			setIsCodeConfirm(CodeConfirmationState.Confirmed);
 		} catch (error) {
-			console.log("код введен неверно!");
 			setIsCodeConfirm(CodeConfirmationState.Unconfirmed);
 		}
 	};

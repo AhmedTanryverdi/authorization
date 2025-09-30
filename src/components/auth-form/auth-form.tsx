@@ -1,48 +1,36 @@
 import logo from "../../assets/images/logo.png";
 import { ChangeEvent, JSX, useContext, useState } from "react";
-import { ErrorStyleType } from "../input/types";
 import { Input } from "../input";
 import { onBlur, onChange as change } from "../input/handlers";
 import { Button } from "../button";
 import { ContextState } from "../../context/context";
 import { rqClient } from "src/api/instance";
+import { ErrorStyleType } from "../input/types";
+import { handleSignIn } from "./handlers";
 
+const messageStyle: any = {
+	display: "block",
+	padding: "4px 0",
+	color: "red",
+	textAlign: "left",
+	fontSize: "14px",
+};
 export const AuthForm = (): JSX.Element => {
-	const [emailValue, setEmailValue] = useState<string>("");
-	const [passwordValue, setPasswordValue] = useState<string>("");
-	const [errorStyleEmail, setErrorStyleEmail] = useState<ErrorStyleType>({
-		error: false,
-	});
-	const [errorStylePassword, setErrorStylePassword] =
-		useState<ErrorStyleType>({
+	const [errorStyle, setErrorStyle] = useState<ErrorStyleType>({
+		email: {
+			style: { boxShadow: "" },
 			error: false,
-		});
+		},
+		password: {
+			style: { boxShadow: "" },
+			error: false,
+		},
+	});
 
-	const { setValidate, setCodeConfirm, setUser } = useContext(ContextState);
-
+	const [errorRequest, setErrorRequest] = useState<string>("");
+	const { setValidate, setCodeConfirm, user, setUser } =
+		useContext(ContextState);
 	const createMutation = rqClient.useMutation("post", "/auth/signin");
-
-	const handleSignIn = async (emailValue: string, passwordValue: string) => {
-		try {
-			const res = await createMutation.mutateAsync({
-				body: {
-					email: emailValue,
-					password: passwordValue,
-				},
-			});
-
-			if (res && res.confirmationCode) {
-				setCodeConfirm(res.confirmationCode);
-				setUser({
-					email: emailValue,
-					password: passwordValue,
-				});
-				setValidate(true);
-			}
-		} catch (error: any) {
-			console.error("Ошибка:", error);
-		}
-	};
 
 	return (
 		<form>
@@ -54,57 +42,76 @@ export const AuthForm = (): JSX.Element => {
 			</h1>
 
 			<Input.Text
-				value={emailValue}
+				value={user.email}
 				onChange={(event: ChangeEvent<HTMLInputElement>) =>
 					change(
 						event,
 						/^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-						setEmailValue,
-						setErrorStyleEmail
+						setUser,
+						setErrorStyle,
+						user,
+						errorStyle,
+						"email"
 					)
 				}
 				onBlur={() =>
-					onBlur(
-						errorStyleEmail.error,
-						emailValue,
-						setErrorStyleEmail
-					)
+					onBlur(user.email, errorStyle, setErrorStyle, "email")
 				}
-				style={errorStyleEmail}
+				style={errorStyle.email.style}
 				placeholder="Email"
 			/>
+			{errorStyle.email.style?.boxShadow && (
+				<span style={messageStyle}>
+					символы "@" и "." обязательны для email!{" "}
+				</span>
+			)}
 
 			<Input.Password
-				value={passwordValue}
+				value={user.password}
 				onChange={(event: ChangeEvent<HTMLInputElement>) =>
 					change(
 						event,
 						/^.{6,}$/,
-						setPasswordValue,
-						setErrorStylePassword
+						setUser,
+						setErrorStyle,
+						user,
+						errorStyle,
+						"password"
 					)
 				}
 				onBlur={() =>
-					onBlur(
-						errorStylePassword.error,
-						passwordValue,
-						setErrorStylePassword
-					)
+					onBlur(user.password, errorStyle, setErrorStyle, "password")
 				}
-				style={errorStylePassword}
+				style={errorStyle.password.style}
 				placeholder="Password"
 			/>
+			{errorStyle.password.style?.boxShadow && (
+				<span style={messageStyle}>
+					Пароль должен содержать не менее 6-ти символов!
+				</span>
+			)}
 
 			<Button
 				label="Log in"
 				disabled={
-					errorStyleEmail.error ||
-					errorStylePassword.error ||
-					!Boolean(emailValue) ||
-					!Boolean(passwordValue)
+					errorStyle.email.error ||
+					errorStyle.password.error ||
+					!Boolean(user.email) ||
+					!Boolean(user.password)
 				}
-				onClick={() => handleSignIn(emailValue, passwordValue)}
+				onClick={() =>
+					handleSignIn(
+						user.email,
+						user.password,
+						setCodeConfirm,
+						setValidate,
+						setUser,
+						setErrorRequest,
+						createMutation
+					)
+				}
 			/>
+			<span style={messageStyle}>{errorRequest}</span>
 		</form>
 	);
 };

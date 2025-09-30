@@ -63,7 +63,7 @@ export interface operations {
         };
       };
       /** @description Ошибка авторизации */
-      400: {
+      401: {
         content: {
           "application/json": {
             /** @example Invalid credentials */

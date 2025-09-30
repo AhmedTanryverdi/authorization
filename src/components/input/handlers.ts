@@ -1,34 +1,97 @@
 import { ChangeEvent } from "react";
-import { ErrorStyleType } from "./types";
 import { KeyboardEvent } from "react";
+import { UserType } from "src/utils/types";
+import { ErrorStyleType } from "./types";
 
 export const onChange = (
 	event: ChangeEvent<HTMLInputElement>,
 	reg: RegExp,
-	setInputValue: (value: string) => void,
-	setStyleValue: (value: ErrorStyleType) => void
+	setUser: (param: UserType) => void,
+	setErrorStyle: (param: ErrorStyleType) => void,
+	user: UserType,
+	errorStyle: ErrorStyleType,
+	type: string
 ) => {
 	const value = event.target.value.trim();
-	setInputValue(value);
-	if (!reg.test(value)) {
-		setStyleValue({ error: true });
-	} else {
-		setStyleValue({ error: false });
+	switch (type) {
+		case "email":
+			setUser({ ...user, email: value });
+			if (!reg.test(value)) {
+				setErrorStyle({
+					...errorStyle,
+					email: { ...errorStyle.email, error: true },
+				});
+			} else {
+				setErrorStyle({
+					...errorStyle,
+					email: { ...errorStyle.email, error: false },
+				});
+			}
+			break;
+		case "password":
+			setUser({ ...user, password: value });
+			if (!reg.test(value)) {
+				setErrorStyle({
+					...errorStyle,
+					password: { ...errorStyle.password, error: true },
+				});
+			} else {
+				setErrorStyle({
+					...errorStyle,
+					password: { ...errorStyle.password, error: false },
+				});
+			}
+			break;
 	}
 };
 
 export const onBlur = (
-	error: boolean,
-	value: string,
-	setStyle: (value: ErrorStyleType) => void
+	inputValue: string,
+	style: ErrorStyleType,
+	setStyle: (param: ErrorStyleType) => void,
+	type: string
 ) => {
-	if (error || !value) {
-		setStyle({
-			error: true,
-			boxShadow: "0 0 1px 1px red",
-		});
-	} else {
-		setStyle({ error: false });
+	switch (type) {
+		case "email": {
+			if (style.email.error || !inputValue) {
+				setStyle({
+					...style,
+					email: {
+						style: { boxShadow: "0 0 1px 1px red" },
+						error: true,
+					},
+				});
+			} else {
+				setStyle({
+					...style,
+					email: {
+						style: {},
+						error: false,
+					},
+				});
+			}
+			break;
+		}
+		case "password": {
+			if (style.password.error || !inputValue) {
+				setStyle({
+					...style,
+					password: {
+						style: { boxShadow: "0 0 1px 1px red" },
+						error: true,
+					},
+				});
+			} else {
+				setStyle({
+					...style,
+					password: {
+						style: {},
+						error: false,
+					},
+				});
+			}
+			break;
+		}
 	}
 };
 

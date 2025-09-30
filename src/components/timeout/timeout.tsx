@@ -4,6 +4,7 @@ import styles from "./timeout.module.scss";
 import { rqClient } from "src/api/instance";
 import { ContextState } from "src/context/context";
 import { CodeConfirmationState } from "src/utils/types";
+import { handleSignIn } from "./handlers";
 
 interface IProps {
 	timeLeft: number;
@@ -37,25 +38,6 @@ export const Timeout: FC<IProps> = ({
 	const { user, setCodeConfirm, setIsCodeConfirm } = useContext(ContextState);
 	const createMutation = rqClient.useMutation("post", "/auth/signin");
 
-	const handleSignIn = async (emailValue: string, passwordValue: string) => {
-		try {
-			const res = await createMutation.mutateAsync({
-				body: {
-					email: emailValue,
-					password: passwordValue,
-				},
-			});
-
-			if (res && res.confirmationCode) {
-				setCodeConfirm(res.confirmationCode);
-				setIsCodeConfirm(CodeConfirmationState.Unconfirmed);
-				setTimeLeft(45000);
-			}
-		} catch (error: any) {
-			console.error("Ошибка:", error);
-		}
-	};
-
 	if (isCodeConfirm === CodeConfirmationState.Confirmed) {
 		return (
 			<Button
@@ -72,7 +54,16 @@ export const Timeout: FC<IProps> = ({
 	) : (
 		<Button
 			label="Get new"
-			onClick={() => handleSignIn(user.email, user.password)}
+			onClick={() =>
+				handleSignIn(
+					user.email,
+					user.password,
+					setCodeConfirm,
+					setIsCodeConfirm,
+					setTimeLeft,
+					createMutation
+				)
+			}
 		/>
 	);
 };
