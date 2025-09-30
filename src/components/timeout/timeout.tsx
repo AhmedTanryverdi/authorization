@@ -56,7 +56,7 @@ export const Timeout: FC<IProps> = ({
 		}
 	};
 
-	if (isCodeConfirm) {
+	if (isCodeConfirm === CodeConfirmationState.Confirmed) {
 		return (
 			<Button
 				label={"Сontinue"}
@@ -71,7 +71,7 @@ export const Timeout: FC<IProps> = ({
 		</div>
 	) : (
 		<Button
-			label={isCodeConfirm ? "continue" : "Get new"}
+			label="Get new"
 			onClick={() => handleSignIn(user.email, user.password)}
 		/>
 	);

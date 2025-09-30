@@ -10,6 +10,7 @@ import {
 } from "react";
 import { onChangeDigit, onKeyDownDigit } from "./handlers";
 import { ContextState } from "src/context/context";
+import { CodeConfirmationState } from "src/utils/types";
 
 const createInput = ({ type }: { type: string }) => {
 	return ({
@@ -78,7 +79,7 @@ const DigitCode = ({
 	}, [code.length, code]);
 	useEffect(() => {
 		setCode([]);
-		setIsCodeConfirm(undefined);
+		setIsCodeConfirm(CodeConfirmationState.NotEntered);
 	}, [codeConfirm]);
 
 	return (
@@ -92,7 +93,7 @@ const DigitCode = ({
 					onInput={onChangeDigit(index, code, setCode, codeRefs)}
 					onKeyDown={onKeyDownDigit(index, codeRefs)}
 					inputStatus={
-						isCodeConfirm !== undefined && !isCodeConfirm
+						isCodeConfirm === CodeConfirmationState.Unconfirmed
 							? "error"
 							: ""
 					}

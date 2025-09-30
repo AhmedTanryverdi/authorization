@@ -32,7 +32,7 @@ export const AuthCodeForm: React.FC = (): JSX.Element => {
 			</p>
 
 			<Input.DigitCode handleConfirm={handleConfirm} />
-			{!isCodeConfirm && isCodeConfirm !== undefined && (
+			{isCodeConfirm === CodeConfirmationState.Unconfirmed && (
 				<span className="errorconfirm">Invalid code</span>
 			)}
 
