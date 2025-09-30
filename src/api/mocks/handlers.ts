@@ -1,24 +1,14 @@
 import { HttpResponse } from "msw";
 import { http } from "../mocks/http";
 import { components } from "../../utils/generated";
+import { UserType } from "src/utils/types";
 
 export type ApiSchemas = components["schemas"];
 
 // Шестизначный код
-/*
-let expectedConfirmationCode = Math.floor(
-	100000 + Math.random() * 900000
-).toString();
-*/
+let expectedConfirmationCode: string;
 
-let expectedConfirmationCode = "123456";
-
-const mockUsers = [
-	{
-		email: "ahmed@yandex.ru",
-		password: "123456",
-	},
-];
+const mockUsers: UserType[] = [];
 
 export const authHandlers = [
 	http.post("/auth/signin", async ({ request }: any) => {
@@ -28,18 +18,21 @@ export const authHandlers = [
 		);
 
 		if (!user) {
-			return HttpResponse.json(
-				{
-					error: "Неправильные учетные данные",
-				},
-				{ status: 400 }
-			);
+			mockUsers.push({
+				email: body.email,
+				password: body.password,
+			});
 		}
 
+		const confirmCode = Math.floor(
+			100000 + Math.random() * 900000
+		).toString();
+
+		expectedConfirmationCode = confirmCode;
 		return HttpResponse.json(
 			{
 				message: "Авторизация прошла успешно!",
-				codeSentTo: user.email,
+				confirmationCode: expectedConfirmationCode,
 			},
 			{ status: 200 }
 		);

@@ -1,7 +1,15 @@
-import { useRef, ChangeEvent, JSX, useState, useEffect } from "react";
 import styles from "./input.module.scss";
 import { IProps } from "./types";
+import {
+	useRef,
+	ChangeEvent,
+	JSX,
+	useState,
+	useEffect,
+	useContext,
+} from "react";
 import { onChangeDigit, onKeyDownDigit } from "./handlers";
+import { ContextState } from "src/context/context";
 
 const createInput = ({ type }: { type: string }) => {
 	return ({
@@ -9,6 +17,7 @@ const createInput = ({ type }: { type: string }) => {
 		placeholder,
 		maxLength,
 		onChange,
+		inputStatus,
 		...rest
 	}: IProps): JSX.Element => {
 		return (
@@ -18,6 +27,7 @@ const createInput = ({ type }: { type: string }) => {
 			>
 				<input
 					className={styles.input}
+					data-status={inputStatus}
 					type={type}
 					placeholder={placeholder}
 					value={!value ? "" : value}
@@ -43,7 +53,11 @@ const Password = createInput({
 	type: "password",
 });
 
-const DigitCode = ({ handleConfirm }: { handleConfirm: () => void }) => {
+const DigitCode = ({
+	handleConfirm,
+}: {
+	handleConfirm: (code: string) => void;
+}) => {
 	const [code, setCode] = useState([] as string[]);
 	const codeRefs = [
 		useRef<HTMLInputElement>(null),
@@ -54,11 +68,18 @@ const DigitCode = ({ handleConfirm }: { handleConfirm: () => void }) => {
 		useRef<HTMLInputElement>(null),
 	];
 
+	const { isCodeConfirm, codeConfirm, setIsCodeConfirm } =
+		useContext(ContextState);
+
 	useEffect(() => {
 		if (code.length === 6) {
-			handleConfirm();
+			handleConfirm(code.join(""));
 		}
-	}, [code.length]);
+	}, [code.length, code]);
+	useEffect(() => {
+		setCode([]);
+		setIsCodeConfirm(undefined);
+	}, [codeConfirm]);
 
 	return (
 		<div className={styles.digits_block}>
@@ -70,6 +91,11 @@ const DigitCode = ({ handleConfirm }: { handleConfirm: () => void }) => {
 					value={code[index]}
 					onInput={onChangeDigit(index, code, setCode, codeRefs)}
 					onKeyDown={onKeyDownDigit(index, codeRefs)}
+					inputStatus={
+						isCodeConfirm !== undefined && !isCodeConfirm
+							? "error"
+							: ""
+					}
 				/>
 			))}
 		</div>

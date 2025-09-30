@@ -1,102 +1,103 @@
 openapi: 3.0.0
 info:
-  title: Authentication Service
-  version: 1.0.0
+    title: Authentication Service
+    version: 1.0.0
 servers:
-  - url: https://example.com/api/v1
+    - url: https://example.com/api/v1
 paths:
-  /auth/signin:
-    post:
-      summary: Авторизация с помощью email и пароля
-      description: Отправляет запрос на авторизацию с email и паролем.
-      operationId: signInWithPassword
-      tags:
-        - authentication
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                  example: user@example.com
-                password:
-                  type: string
-                  minLength: 8
-                  maxLength: 32
-                  example: P@ssword123
-              required:
-                - email
-                - password
-      responses:
-        '200':
-          description: Успешная авторизация
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Code sent successfully
-                  codeSentTo:
-                    type: string
-                    format: email
-                    example: user@example.com
-        '400':
-          description: Ошибка авторизации
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Invalid credentials
-  /auth/confirm:
-    post:
-      summary: Подтверждение регистрации с помощью кода
-      description: Отправляет запрос на подтверждение с помощью шестизначного кода.
-      operationId: confirmSignUp
-      tags:
-        - authentication
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                confirmationCode:
-                  type: string
-                  pattern: ^\d{6}$
-                  example: '123456'
-              required:
-                - confirmationCode
-      responses:
-        '200':
-          description: Успешное подтверждение
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Account confirmed successfully
-        '400':
-          description: Неправильный код подтверждения
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error:
-                    type: string
-                    example: Incorrect verification code
+    /auth/signin:
+        post:
+            summary: Авторизация с помощью email и пароля
+            description: Отправляет запрос на авторизацию с email и паролем.
+            operationId: signInWithPassword
+            tags:
+                - authentication
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                email:
+                                    type: string
+                                    format: email
+                                    example: user@example.com
+                                password:
+                                    type: string
+                                    minLength: 8
+                                    maxLength: 32
+                                    example: P@ssword123
+                            required:
+                                - email
+                                - password
+            responses:
+                "200":
+                    description: Успешная авторизация
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Code sent successfully
+                                    confirmationCode:
+                                        type: string
+                                        format: numeric
+                                        pattern: '^\\d{6}$'
+                                        example: 395781
+                "400":
+                    description: Ошибка авторизации
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+                                        example: Invalid credentials
+    /auth/confirm:
+        post:
+            summary: Подтверждение регистрации с помощью кода
+            description: Отправляет запрос на подтверждение с помощью шестизначного кода.
+            operationId: confirmSignUp
+            tags:
+                - authentication
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                confirmationCode:
+                                    type: string
+                                    pattern: ^\d{6}$
+                                    example: "123456"
+                            required:
+                                - confirmationCode
+            responses:
+                "200":
+                    description: Успешное подтверждение
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: Account confirmed successfully
+                "400":
+                    description: Неправильный код подтверждения
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    error:
+                                        type: string
+                                        example: Incorrect verification code
 tags:
-  - name: authentication
-    description: Операции авторизации и верификации
+    - name: authentication
+      description: Операции авторизации и верификации

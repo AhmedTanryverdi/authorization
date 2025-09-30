@@ -6,6 +6,7 @@ interface IProps {
 }
 
 export const Modal: FC<IProps> = ({ children }: IProps): JSX.Element => (
+	
 	<div className={styles.container}>
 		<div className={styles.content}>{children}</div>
 	</div>

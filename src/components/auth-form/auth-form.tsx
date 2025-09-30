@@ -4,7 +4,7 @@ import { ErrorStyleType } from "../input/types";
 import { Input } from "../input";
 import { onBlur, onChange as change } from "../input/handlers";
 import { Button } from "../button";
-import { ValidateState } from "../../context/validate";
+import { ContextState } from "../../context/context";
 import { rqClient } from "src/api/instance";
 
 export const AuthForm = (): JSX.Element => {
@@ -18,20 +18,27 @@ export const AuthForm = (): JSX.Element => {
 			error: false,
 		});
 
-	const { setValidate } = useContext(ValidateState);
+	const { setValidate, setCodeConfirm, setUser } = useContext(ContextState);
 
 	const createMutation = rqClient.useMutation("post", "/auth/signin");
 
-	const handleSignIn = async () => {
+	const handleSignIn = async (emailValue: string, passwordValue: string) => {
 		try {
-			await createMutation.mutateAsync({
+			const res = await createMutation.mutateAsync({
 				body: {
 					email: emailValue,
 					password: passwordValue,
 				},
 			});
 
-			setValidate(true);
+			if (res && res.confirmationCode) {
+				setCodeConfirm(res.confirmationCode);
+				setUser({
+					email: emailValue,
+					password: passwordValue,
+				});
+				setValidate(true);
+			}
 		} catch (error: any) {
 			console.error("Ошибка:", error);
 		}
@@ -96,7 +103,7 @@ export const AuthForm = (): JSX.Element => {
 					!Boolean(emailValue) ||
 					!Boolean(passwordValue)
 				}
-				onClick={handleSignIn}
+				onClick={() => handleSignIn(emailValue, passwordValue)}
 			/>
 		</form>
 	);

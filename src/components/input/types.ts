@@ -11,5 +11,6 @@ export interface IProps {
 	maxLength?: number;
 	onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 	style?: any;
+	inputStatus?: string;
 	[key: string]: any;
 }

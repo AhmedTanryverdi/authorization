@@ -83,6 +83,10 @@ $color-input-border: #d9d9d9;
 			box-shadow: 0 0 1px 1px $color-border-disabled;
 			font-size: 24px;
 			font-weight: 600;
+
+			&[data-status="error"] {
+				box-shadow: 0 0 1px 1px #ff3d3f;
+			}
 		}
 	}
 }

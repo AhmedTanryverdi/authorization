@@ -1,7 +1,7 @@
 import "./App.scss";
 import { useContext } from "react";
 import { Modal } from "./components/modal";
-import { ValidateState } from "./context/validate";
+import { ContextState } from "./context/context";
 import { AuthForm } from "./components/auth-form/auth-form";
 import { AuthCodeForm } from "./components/auth-code-form/auth-code-form";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -13,7 +13,7 @@ if (process.env.NODE_ENV === "development") {
 }
 
 function App() {
-	const { validate } = useContext(ValidateState);
+	const { validate } = useContext(ContextState);
 
 	return (
 		<QueryClientProvider client={queryClient}>

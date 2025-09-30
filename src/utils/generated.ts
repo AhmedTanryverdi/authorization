@@ -55,10 +55,10 @@ export interface operations {
             /** @example Code sent successfully */
             message?: string;
             /**
-             * Format: email 
-             * @example user@example.com
+             * Format: numeric 
+             * @example 395781
              */
-            codeSentTo?: string;
+            confirmationCode?: string;
           };
         };
       };
