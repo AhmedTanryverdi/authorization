@@ -1,13 +1,13 @@
 import { createContext, ReactNode, useState } from "react";
-import { UserType } from "src/utils/types";
+import { CodeConfirmationState, UserType } from "src/utils/types";
 
 type ContextType = {
 	validate: boolean;
 	setValidate: (value: boolean) => void;
 	codeConfirm: string;
 	setCodeConfirm: (value: string) => void;
-	isCodeConfirm: boolean | undefined;
-	setIsCodeConfirm: (value: boolean | undefined) => void;
+	isCodeConfirm: CodeConfirmationState;
+	setIsCodeConfirm: (value: CodeConfirmationState) => void;
 	user: UserType;
 	setUser: (value: UserType) => void;
 };
@@ -17,7 +17,7 @@ export const ContextState = createContext<ContextType>({
 	setValidate: () => {},
 	codeConfirm: "",
 	setCodeConfirm: () => {},
-	isCodeConfirm: undefined,
+	isCodeConfirm: CodeConfirmationState.NotEntered,
 	setIsCodeConfirm: () => {},
 	user: { email: "", password: "" },
 	setUser: () => {},
@@ -26,8 +26,8 @@ export const ContextState = createContext<ContextType>({
 export const ContextProvider = ({ children }: { children: ReactNode }) => {
 	const [validate, setValidate] = useState<boolean>(false);
 	const [codeConfirm, setCodeConfirm] = useState<string>("");
-	const [isCodeConfirm, setIsCodeConfirm] = useState<boolean | undefined>(
-		undefined
+	const [isCodeConfirm, setIsCodeConfirm] = useState<CodeConfirmationState>(
+		CodeConfirmationState.NotEntered
 	);
 	const [user, setUser] = useState({ email: "", password: "" });
 

@@ -2,12 +2,12 @@ import { ChangeEvent } from "react";
 import { ErrorStyleType } from "./types";
 import { KeyboardEvent } from "react";
 
-export function onChange(
+export const onChange = (
 	event: ChangeEvent<HTMLInputElement>,
 	reg: RegExp,
 	setInputValue: (value: string) => void,
 	setStyleValue: (value: ErrorStyleType) => void
-) {
+) => {
 	const value = event.target.value.trim();
 	setInputValue(value);
 	if (!reg.test(value)) {
@@ -15,13 +15,13 @@ export function onChange(
 	} else {
 		setStyleValue({ error: false });
 	}
-}
+};
 
-export function onBlur(
+export const onBlur = (
 	error: boolean,
 	value: string,
 	setStyle: (value: ErrorStyleType) => void
-) {
+) => {
 	if (error || !value) {
 		setStyle({
 			error: true,
@@ -30,7 +30,7 @@ export function onBlur(
 	} else {
 		setStyle({ error: false });
 	}
-}
+};
 
 export const onChangeDigit =
 	(

@@ -4,6 +4,7 @@ import { Input } from "../input";
 import { Timeout } from "../timeout";
 import { rqClient } from "src/api/instance";
 import { ContextState } from "src/context/context";
+import { CodeConfirmationState } from "src/utils/types";
 
 export const AuthCodeForm: React.FC = (): JSX.Element => {
 	const { codeConfirm, isCodeConfirm, setIsCodeConfirm } =
@@ -14,10 +15,10 @@ export const AuthCodeForm: React.FC = (): JSX.Element => {
 			await createMutation.mutateAsync({
 				body: { confirmationCode: code },
 			});
-			setIsCodeConfirm(true);
+			setIsCodeConfirm(CodeConfirmationState.Confirmed);
 		} catch (error) {
 			console.log("код введен неверно!");
-			setIsCodeConfirm(false);
+			setIsCodeConfirm(CodeConfirmationState.Unconfirmed);
 		}
 	};
 

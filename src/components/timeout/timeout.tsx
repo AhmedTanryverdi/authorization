@@ -3,10 +3,11 @@ import { Button } from "../button";
 import styles from "./timeout.module.scss";
 import { rqClient } from "src/api/instance";
 import { ContextState } from "src/context/context";
+import { CodeConfirmationState } from "src/utils/types";
 
 interface IProps {
 	timeLeft: number;
-	isCodeConfirm: boolean | undefined;
+	isCodeConfirm: CodeConfirmationState;
 }
 
 export const Timeout: FC<IProps> = ({
@@ -47,7 +48,8 @@ export const Timeout: FC<IProps> = ({
 
 			if (res && res.confirmationCode) {
 				setCodeConfirm(res.confirmationCode);
-				setIsCodeConfirm(false);
+				setIsCodeConfirm(CodeConfirmationState.Unconfirmed);
+				setTimeLeft(45000);
 			}
 		} catch (error: any) {
 			console.error("Ошибка:", error);
@@ -57,8 +59,8 @@ export const Timeout: FC<IProps> = ({
 	if (isCodeConfirm) {
 		return (
 			<Button
-				label={"continue"}
-				onClick={() => console.log("[continue]")}
+				label={"Сontinue"}
+				onClick={() => console.log("[Сontinue]")}
 			/>
 		);
 	}
