@@ -1,7 +1,7 @@
 import { useRef, ChangeEvent, JSX, useState, useEffect } from "react";
 import styles from "./input.module.scss";
-import { IProps } from "../../utils/types";
-import { onChangeDigit, onKeyDownDigit } from "../../utils/helpers";
+import { IProps } from "./types";
+import { onChangeDigit, onKeyDownDigit } from "./handlers";
 
 const createInput = ({ type }: { type: string }) => {
 	return ({
