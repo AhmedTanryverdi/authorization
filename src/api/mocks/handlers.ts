@@ -9,7 +9,7 @@ let expectedConfirmationCode: string;
 
 const mockUsers = [
 	{
-		email: "ahmed@yandex.ru",
+		email: "ivanov@yandex.ru",
 		password: "123456",
 	},
 ];
